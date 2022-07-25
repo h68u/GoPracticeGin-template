@@ -1,0 +1,1 @@
+# GoPracticeGin-template
