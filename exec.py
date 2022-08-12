@@ -76,7 +76,7 @@ def multithread_wrapper(task):
 def wake_target_win():
     def task_block():
         cmd_check_batch_win = '''\
-        cd quizzes/quiz{:0>2d} && \
+        cd quizzes/quiz{:0>3d} && \
         go build -o target.exe && \
         mv target.exe ../../_checkspace/target.exe && \
         cd ../../_checkspace/ && \
@@ -89,7 +89,7 @@ def wake_target_win():
 def wake_target():
     def task_block():
         cmd_check_batch = '''\
-        cd quizzes/quiz{:0>2d} && \
+        cd quizzes/quiz{:0>3d} && \
         go build -o target && \
         mv target.exe ../../_checkspace/target && \
         cd ../../_checkspace/ && \
@@ -123,7 +123,7 @@ def check_locally_win():
     os.makedirs('_checkspace/', exist_ok=True)
     wake_target_win()
     try:
-        os.system('python check_scripts/{:0>2d}.py'
+        os.system('python check_scripts/{:0>3d}.py'
                   .format(quiz_id))
     except QuizFailedException as e:
         print(e.args[0])
@@ -137,7 +137,7 @@ def check_locally():
         os.makedirs('.checkspace/', exist_ok=True)
         wake_target()
         try:
-            os.system('python check_scripts/{:0>2d}.py'
+            os.system('python check_scripts/{:0>3d}.py'
                       .format(quiz_id))
         except QuizFailedException as e:
             print(e)
@@ -148,7 +148,7 @@ def check_locally():
 
 def check():
     try:
-        os.system('python check_scripts/{:0>2d}.py'
+        os.system('python check_scripts/{:0>3d}.py'
                   .format(quiz_id))
     except QuizFailedException as e:
         print(e)
