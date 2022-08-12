@@ -1,8 +1,8 @@
 import os
 import sys
-from typing import Union
+import threading
 
-from check_scripts.quizexception import QuizFailedException
+from check_scripts.utils import QuizFailedException
 
 help_msg = '''
             #---*    [HELP]    *---#
@@ -27,7 +27,7 @@ Arguments:
 Anyway, you should read the README.md firstly. 😂
 '''
 
-action_template = """
+action_template = '''
 name: GitHub Classroom Workflow
 
 on: [push]
@@ -52,19 +52,55 @@ jobs:
       run: pip3 install requests
       
     - name: Build
-      run: go build -o .checkspace/target  quizzes/quiz{:0>2d}/
+      run: |
+        mkdir -p .checkspace/ && \
+        cd quizzes/quiz{:0>2d}/ && \
+        go build -o target && \
+        mv target ../../.checkspace/target
       
     - name: Run after build
       run: ./.checkspace/target
 
     - uses: education/autograding@v1
-"""
+'''
 
-quiz_id: Union[int, str]
+quiz_id: int
+
+
+def multithread_wrapper(task):
+    """Start a new process"""
+    p = threading.Thread(target=task)
+    p.start()
+
+
+def wake_target_win():
+    def task_block():
+        cmd_check_batch_win = '''\
+        cd quizzes/quiz{:0>2d} && \
+        go build -o target.exe && \
+        mv target.exe ../../_checkspace/target.exe && \
+        cd ../../_checkspace/ && \
+        target.exe
+        '''
+        os.system(cmd_check_batch_win.format(quiz_id))
+    multithread_wrapper(task_block)
+
+
+def wake_target():
+    def task_block():
+        cmd_check_batch = '''\
+        cd quizzes/quiz{:0>2d} && \
+        go build -o target && \
+        mv target.exe ../../_checkspace/target && \
+        cd ../../_checkspace/ && \
+        ./target
+        '''
+        os.system(cmd_check_batch.format(quiz_id))
+    multithread_wrapper(task_block)
 
 
 def update_autograding():
-    classroom_yml = action_template.format(int(quiz_id))
+    classroom_yml = action_template.format(quiz_id)
     os.makedirs('.github/workflows/', exist_ok=True)
     with open('.github/workflows/classroom.yml', 'w+') as f:
         f.write(classroom_yml)
@@ -77,26 +113,37 @@ def update_autograding():
 def init_quiz_id():
     try:
         global quiz_id
-        quiz_id = sys.argv[2]
+        quiz_id = int(sys.argv[2])
     except:
         print('[ERROR] Missing quiz id.')
         exit(1)
 
 
-def check_locally():
-    init_quiz_id()
-    os.makedirs('.checkspace/', exist_ok=True)
-    os.system('go build -o .checkspace/target '
-              'quizzes/quiz{:0>2d}/'.format(int(quiz_id)))
-    os.system('./.checkspace/target')
+def check_locally_win():
+    os.makedirs('_checkspace/', exist_ok=True)
+    wake_target_win()
     try:
         os.system('python check_scripts/{:0>2d}.py'
                   .format(quiz_id))
     except QuizFailedException as e:
-        print(e)
+        print(e.args[0])
         exit(1)
 
-    exit(0)
+
+def check_locally():
+    if sys.platform == 'win32':
+        check_locally_win()
+    else:
+        os.makedirs('.checkspace/', exist_ok=True)
+        wake_target()
+        try:
+            os.system('python check_scripts/{:0>2d}.py'
+                      .format(quiz_id))
+        except QuizFailedException as e:
+            print(e)
+            exit(1)
+
+        exit(0)
 
 
 def check():
@@ -111,12 +158,17 @@ def check():
 
 
 def clean():
-    try:
-        os.removedirs('.checkspace')
-    except Exception as e:
-        print(e)
-    finally:
-        print('[INFO] All cleaned.')
+    if sys.platform == 'win32':
+        try:
+            os.removedirs('_checkspace')
+        except Exception as e:
+            print(e)
+    else:
+        try:
+            os.removedirs('.checkspace')
+        except Exception as e:
+            print(e)
+    print('[INFO] All cleaned.')
 
 
 def dispatch(arg):
@@ -150,5 +202,6 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('[ERROR] Args were not enough.')
         exit(1)
+
     dispatch(sys.argv[1])
     exit(0)

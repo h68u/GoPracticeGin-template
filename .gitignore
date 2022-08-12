@@ -1,6 +1,7 @@
 .vscode
 .idea
 .checkspace
+_checkspace
 *.code-workspace
 *.exe
 tmp/
