@@ -177,24 +177,26 @@ def dispatch(arg):
         All branches started with function call
         `init_quiz_id()`, need the extra argument : [id]
     """
-    match arg:
-        case 'init':
-            init_quiz_id()
-            update_autograding()
+    if arg == 'init':
+        init_quiz_id()
+        update_autograding()
 
-        case '__check':  # called by classroom action : education/autograding@v1
-            init_quiz_id()
-            check()
+    elif arg == '__check':  # called by classroom action : education/autograding@v1
+        init_quiz_id()
+        check()
 
-        case 'test':  # used for local test
-            init_quiz_id()
-            check_locally()
+    elif arg == 'test':  # used for local test
+        init_quiz_id()
+        check_locally()
 
-        case 'help':
-            print(help_msg)
+    elif arg == 'help':
+        print(help_msg)
 
-        case 'clean':
-            clean()
+    elif arg == 'clean':
+        clean()
+
+    else:
+        print('[ERROR] Unknown arg.')
 
 
 if __name__ == '__main__':
