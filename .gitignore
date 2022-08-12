@@ -1,0 +1,7 @@
+.vscode
+.idea
+.checkspace
+*.code-workspace
+*.exe
+tmp/
+__pycache__
