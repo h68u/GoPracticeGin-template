@@ -60,7 +60,7 @@ jobs:
         mv target ../../.checkspace/target
       
     - name: Run after build
-      run: timeout 15 ./.checkspace/target
+      run: ./.checkspace/target
 
     - uses: education/autograding@v1
 '''
@@ -81,9 +81,9 @@ def wake_target_win():
         go build -o target.exe && \
         mv target.exe ../../_checkspace/target.exe && \
         cd ../../_checkspace/ && \
-        timeout 15 {}target.exe
+        target.exe
         '''
-        os.system(cmd_check_batch_win.format(quiz_id, os.getcwd()+'\\_checkspace\\'))
+        os.system(cmd_check_batch_win.format(quiz_id))
     multithread_wrapper(task_block)
 
 
@@ -94,7 +94,7 @@ def wake_target():
         go build -o target && \
         mv target.exe ../../_checkspace/target && \
         cd ../../_checkspace/ && \
-        timeout 15 ./target
+        ./target
         '''
         os.system(cmd_check_batch.format(quiz_id))
     multithread_wrapper(task_block)
