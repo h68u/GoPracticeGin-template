@@ -11,7 +11,7 @@
 - 熟悉环境和操作流程
 [点击接受任务](https://classroom.github.com/a/dzNQHTLr)
 
-#### [Chapter 1](#chapter01) 
+#### [Chapter 1](#chapter-1) 
 
 - `on progress...`
   施工中...
