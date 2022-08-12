@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 import threading
 
@@ -59,7 +60,7 @@ jobs:
         mv target ../../.checkspace/target
       
     - name: Run after build
-      run: ./.checkspace/target
+      run: timeout 15 ./.checkspace/target
 
     - uses: education/autograding@v1
 '''
@@ -68,7 +69,7 @@ quiz_id: int
 
 
 def multithread_wrapper(task):
-    """Start a new process"""
+    """Run target in another thread."""
     p = threading.Thread(target=task)
     p.start()
 
@@ -80,7 +81,7 @@ def wake_target_win():
         go build -o target.exe && \
         mv target.exe ../../_checkspace/target.exe && \
         cd ../../_checkspace/ && \
-        target.exe
+        timeout 15 target.exe
         '''
         os.system(cmd_check_batch_win.format(quiz_id))
     multithread_wrapper(task_block)
@@ -93,7 +94,7 @@ def wake_target():
         go build -o target && \
         mv target.exe ../../_checkspace/target && \
         cd ../../_checkspace/ && \
-        ./target
+        timeout 15 ./target
         '''
         os.system(cmd_check_batch.format(quiz_id))
     multithread_wrapper(task_block)
@@ -158,16 +159,14 @@ def check():
 
 
 def clean():
-    if sys.platform == 'win32':
-        try:
-            os.removedirs('_checkspace')
-        except Exception as e:
-            print(e)
-    else:
-        try:
-            os.removedirs('.checkspace')
-        except Exception as e:
-            print(e)
+    try:
+        shutil.rmtree('.checkspace')
+    except Exception as e:
+        print(e)
+    try:
+        shutil.rmtree('_checkspace')
+    except Exception as e:
+        print(e)
     print('[INFO] All cleaned.')
 
 
