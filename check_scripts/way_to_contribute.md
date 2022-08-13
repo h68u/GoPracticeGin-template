@@ -42,23 +42,23 @@ python exec.py init 00
 对于参与者写好的练习(基于 go)，我们将其代码编译，再将可执行文件移到指定的测试环境(其实就是一个隐藏目录:`.checkspace` windows 上是 `_checkspace`)进行测试
 
 ```yml
-    # 编译指定练习，具体是哪一个练习，由 `py exec.py init` 时指定，
-    # 并由脚本格式化后进行覆写  
-    - name: Build
-      run: |
-        mkdir -p .checkspace/ && \
-        cd quizzes/quiz{:0>2d}/ && \
-        go build -o target && \
-        mv target ../../.checkspace/target
-      
-    # 将编译后的结果跑起来，因为当前项目是使用 Gin 的 Web 项目
-    # 所以需要将后台跑起来，之后运行相应的脚本对这个后台进行测试
-    - name: Run after build
-      run: ./.checkspace/target
+# 编译指定练习，具体是哪一个练习，由 `py exec.py init` 时指定，
+# 并由脚本格式化后进行覆写  
+- name: Build
+  run: |
+    mkdir -p .checkspace/ && \
+    cd quizzes/quiz{:0>2d}/ && \
+    go build -o target && \
+    mv target ../../.checkspace/target
+  
+# 将编译后的结果跑起来，因为当前项目是使用 Gin 的 Web 项目
+# 所以需要将后台跑起来，之后运行相应的脚本对这个后台进行测试
+- name: Run after build
+  run: ./.checkspace/target
 
-    # 这里会执行 classroom 后台指定的命令与脚本，我们的测试脚本
-    # 就是写好、在后台设置好后，使用 classroom 准备好的 action 执行的
-    - uses: education/autograding@v1
+# 这里会执行 classroom 后台指定的命令与脚本，我们的测试脚本
+# 就是写好、在后台设置好后，使用 classroom 准备好的 action 执行的
+- uses: education/autograding@v1
 ```
 
 ### 检验是如何进行的
