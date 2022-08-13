@@ -11,35 +11,39 @@
 - 熟悉环境和操作流程
 [点击接受任务](https://classroom.github.com/a/dzNQHTLr)
 
-#### [Chapter 1](#chapter-1) 
+##### [Chapter 1](#chapter-1) 
 
 - `on progress...`
   施工中...
 
-#### [Chapter 2](#chapter-2)
+##### [Chapter 2](#chapter-2)
 
 - `on progress...`
   施工中...
 
-#### [Chapter 3](#chapter-3) 
+##### [Chapter 3](#chapter-3) 
 
 - `on progress...`
   施工中...
 
-### Have a try!
+#### Have a try!
 
 - [ ] 在 `GoPracticeGin-template` 目录下执行 `python exec.py init 00` 使能 GitHub Classroom 的自动打分功能
 - [ ] 执行本地测试 `python exec.py test 00`
 - [ ] 修改后端的返回的内容(相关内容位于 [quizzes/quiz00](quizzes/quiz00/quiz.go) 中)，达到要求后 commit 提交到远程，使测试通过
 
-### Chapter 1
+#### Chapter 1
 
 施工中...
 
-### Chapter 2
+#### Chapter 2
 
 施工中...
 
-### Chapter 3
+#### Chapter 3
 
 施工中...
+
+### 其他
+
+[如何添加新练习 / 测验](check_scripts/way_to_contribute.md)

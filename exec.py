@@ -49,7 +49,7 @@ jobs:
       with:
           go-version: 1.19
 
-    - name: Collect Gependencies
+    - name: Collect Dependencies
       run: pip3 install requests
       
     - name: Build
